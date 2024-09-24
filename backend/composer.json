@@ -1,0 +1,25 @@
+{
+    "name": "ingvar/webscraper",
+    "description": "A PHP web scraping application for e-commerce data extraction",
+    "type": "project",
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "sunra/php-simple-html-dom-parser": "v1.5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "start": "php -S localhost:8000"
+    },
+    "authors": [
+        {
+            "name": "Ingvar Leerimaa",
+            "email": "ingvar.leerimaa@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "license": "MIT"
+}
