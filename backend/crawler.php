@@ -1,73 +1,155 @@
 <?php
 function crawlWebsites() {
-    $urls = file('testUrl.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $urls = file('url.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $allData = [];
+    $categoryUrls = [];
+    $categoryNames = [];
 
+    // First, get all the category URLs
     foreach ($urls as $url) {
-        $html = file_get_contents($url);
+        $html = @file_get_contents($url);
 
         if ($html === false) {
+            // Request failed, continue with the next URL
             continue;
         }
 
-        // Kasuta DOM-i sisu parsimiseks
         $dom = new DOMDocument();
-        @$dom->loadHTML($html);
+        @$dom->loadHTML($html); 
 
         $xpath = new DOMXPath($dom);
 
-        // Otsi tootenimesid, hindu ja kategooriaid
-        $products = [];
-        $categories = [];
+        // Extract the site name (from title or another identifier)
+        $siteNameNodes = $xpath->query("//title");
+        $siteName = $siteNameNodes->length > 0 ? trim($siteNameNodes->item(0)->textContent) : 'Unknown Site';
 
-        // Otsi tootenimed ja hinnad vastavalt veebilehe struktuurile
-        $productNodes = $xpath->query("//article[@class='product_pod']"); // Iga toote plokk
-        
-        foreach ($productNodes as $node) {
-            $name = $xpath->query(".//h3/a", $node)->item(0)->textContent ?? '';
-            $price = $xpath->query(".//p[@class='price_color']", $node)->item(0)->textContent ?? '';
-            $category = 'Books'; // Kuna leht on ainult raamatute jaoks
-
-            // Kogume andmed toodete ja kategooriate kohta
-            $products[] = [
-                'name' => trim($name),
-                'price' => trim($price),
-                'category' => trim($category),
-            ];
-
-            // Kategooriad loendisse
-            if (!isset($categories[$category])) {
-                $categories[$category] = 0;
-            }
-            $categories[$category]++;
-        }
-
-        // Lisa kategooriate otsing: Leia kõik a href, kus on "category"
-        $categoryNodes = $xpath->query("//a[contains(@href, 'category')]");
-
-        // HashMapi jaoks
-        $categoryMap = [];
+        // Find all subcategories with href links containing "category/books"
+        $categoryNodes = $xpath->query("//a[contains(@href, 'category/books/') and not(contains(@href, 'category/books_1'))]");
 
         foreach ($categoryNodes as $node) {
             $href = $node->getAttribute('href');
             $categoryName = trim($node->textContent);
-            
-            // Veendume, et href ja kategooria nimi on olemas
+
             if (!empty($href) && !empty($categoryName)) {
-                // URL võiks olla absoluutne, nii et ühendame selle baasaadressiga
-                $absoluteUrl = rtrim($url, '/') . '/' . ltrim($href, '/');
-                $categoryMap[$categoryName] = $absoluteUrl;
+                $categoryUrl = rtrim($url, '/') . '/' . ltrim($href, '/');
+                $categoryUrls[] = $categoryUrl; // Collect category URLs
+                $categoryNames[] = $categoryName; // Collect category names for mapping later
             }
         }
 
+        // Add the site data (without categories yet) to the final result
         $allData[] = [
+            'siteName' => $siteName,
             'url' => $url,
-            'products' => $products,
-            'categories' => $categories,
-            'categoryMap' => $categoryMap // Lisa siia kategooria HashMap
+            'categories' => []  // Categories will be added later
         ];
     }
 
+    // Now, perform concurrent crawling for all category URLs
+    $categoryData = crawlCategoriesConcurrently($categoryUrls);
+
+    // Assign category data back to the site data
+    foreach ($categoryNames as $index => $categoryName) {
+        $allData[0]['categories'][$categoryName] = $categoryData[$index]; // Map categories to site
+    }
+
+    // Return all the crawled data
     return $allData;
 }
+
+function crawlCategoriesConcurrently($categoryUrls) {
+    $multiCurl = curl_multi_init();
+    $curlHandles = [];
+    $categoryData = [];
+
+    // Initialize cURL handles for each category URL
+    foreach ($categoryUrls as $index => $categoryUrl) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $categoryUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_multi_add_handle($multiCurl, $ch);
+        $curlHandles[$index] = $ch;
+    }
+
+    // Execute all requests concurrently
+    $active = null;
+    do {
+        curl_multi_exec($multiCurl, $active);
+        curl_multi_select($multiCurl);
+    } while ($active);
+
+    // Collect responses
+    foreach ($curlHandles as $index => $ch) {
+        $response = curl_multi_getcontent($ch);
+        $categoryData[$index] = parseCategoryPage($response); // Parse each category page for products
+        curl_multi_remove_handle($multiCurl, $ch);
+        curl_close($ch);
+    }
+
+    // Close the multi cURL handle
+    curl_multi_close($multiCurl);
+
+    return $categoryData;
+}
+
+function parseCategoryPage($html) {
+    $products = [];
+    $bookId = 1; // Initialize ID counter
+
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);
+    $xpath = new DOMXPath($dom);
+
+    // Get all book details from the category (subcategory)
+    $bookNodes = $xpath->query("//article[@class='product_pod']");
+
+    foreach ($bookNodes as $node) {
+        $bookNameNode = $xpath->query(".//h3/a", $node);
+        $bookName = $bookNameNode->length > 0 ? trim($bookNameNode->item(0)->textContent) : 'Unknown Title'; // Error handling
+
+        $bookPriceNode = $xpath->query(".//p[@class='price_color']", $node);
+        $bookPrice = $bookPriceNode->length > 0 ? trim($bookPriceNode->item(0)->textContent) : '0.00'; // Error handling
+
+        $bookRatingNode = $xpath->query(".//p[contains(@class, 'star-rating')]", $node);
+        $bookRating = $bookRatingNode->length > 0 ? $bookRatingNode->item(0)->getAttribute('class') : ''; // Error handling
+
+        // Store the book details with ID and name, remove URL
+        $products[$bookId] = [
+            'id' => $bookId,  // Assign an ID number
+            'name' => $bookName,  // Add the book name
+            'price' => filterPrice($bookPrice), // Remove fiat symbol from price
+            'rating' => getBookRating($bookRating),
+        ];
+
+        $bookId++; // Increment the ID counter
+    }
+
+    return $products;
+}
+
+// Function to remove currency symbols from price
+function filterPrice($price) {
+    return preg_replace('/[^0-9.]/', '', $price); // Keep only numbers and dots
+}
+
+// Function to translate rating class to number of stars
+function getBookRating($ratingClass) {
+    $rating = 0;
+
+    if (strpos($ratingClass, 'One') !== false) {
+        $rating = 1;
+    } elseif (strpos($ratingClass, 'Two') !== false) {
+        $rating = 2;
+    } elseif (strpos($ratingClass, 'Three') !== false) {
+        $rating = 3;
+    } elseif (strpos($ratingClass, 'Four') !== false) {
+        $rating = 4;
+    } elseif (strpos($ratingClass, 'Five') !== false) {
+        $rating = 5;
+    }
+
+    return $rating;
+}
+
 ?>

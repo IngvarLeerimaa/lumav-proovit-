@@ -3,7 +3,7 @@
         'name' => 'ingvar/webscraper',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '96df896596a620897b0029ab6f4f93954bdfc5e4',
+        'reference' => '22e7016eefb08a31dcda4083d0b9e21224dfcae3',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'ingvar/webscraper' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '96df896596a620897b0029ab6f4f93954bdfc5e4',
+            'reference' => '22e7016eefb08a31dcda4083d0b9e21224dfcae3',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
