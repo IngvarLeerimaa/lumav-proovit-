@@ -42,10 +42,29 @@ function crawlWebsites() {
             $categories[$category]++;
         }
 
+        // Lisa kategooriate otsing: Leia kõik a href, kus on "category"
+        $categoryNodes = $xpath->query("//a[contains(@href, 'category')]");
+
+        // HashMapi jaoks
+        $categoryMap = [];
+
+        foreach ($categoryNodes as $node) {
+            $href = $node->getAttribute('href');
+            $categoryName = trim($node->textContent);
+            
+            // Veendume, et href ja kategooria nimi on olemas
+            if (!empty($href) && !empty($categoryName)) {
+                // URL võiks olla absoluutne, nii et ühendame selle baasaadressiga
+                $absoluteUrl = rtrim($url, '/') . '/' . ltrim($href, '/');
+                $categoryMap[$categoryName] = $absoluteUrl;
+            }
+        }
+
         $allData[] = [
             'url' => $url,
             'products' => $products,
-            'categories' => $categories
+            'categories' => $categories,
+            'categoryMap' => $categoryMap // Lisa siia kategooria HashMap
         ];
     }
 
