@@ -50,11 +50,36 @@ function addSearchAndLogoutButton() {
 
 function addLoading() {
     console.log("We are waiting...");
+    
+    let loader = document.querySelector('.loader');
+    
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.classList.add('loader');
+        
+        document.body.appendChild(loader);
+    } else {
+        loader.classList.remove('loader--hidden');
+    }
 }
 
 function removeLoading() {
     console.log("Well that took some time..");
+    
+    const loader = document.querySelector('.loader');
+    
+    if (loader) {
+        loader.classList.add('loader--hidden');
+        
+        loader.addEventListener('transitionend', () => {
+            if (loader && loader.parentNode) {
+                loader.parentNode.removeChild(loader);
+            }
+        });
+    }
 }
+
+
 
 function parseData(webData) {
     console.log(webData);
@@ -66,4 +91,18 @@ function logOut() {
 
 document.addEventListener('DOMContentLoaded', function() {
     addSearchAndLogoutButton();
+});
+
+window.addEventListener("load", () => {
+    const loader = document.querySelector(".loader");
+
+    if (loader) {
+        loader.classList.add("loader--hidden");
+
+        loader.addEventListener("transitionend", () => {
+            if (loader && loader.parentNode) {
+                loader.parentNode.removeChild(loader);
+            }
+        });
+    }
 });
