@@ -143,7 +143,7 @@ function parseCategoryPage($html, $categoryUrl) {
                 $nextPageUrl = rtrim($categoryUrl, '/') . '/' . ltrim($nextPageHref, '/');
             }
 
-          /*   // Debugging: Log the next page URL being fetched
+          /*  
             echo "Fetching next page: " . $nextPageUrl . PHP_EOL; */
 
             // Fetch the next page content
@@ -151,7 +151,7 @@ function parseCategoryPage($html, $categoryUrl) {
 
             if ($html === false) {
                 // Stop the loop if the next page couldn't be fetched
-                echo "Failed to fetch next page: " . $nextPageUrl . PHP_EOL;
+               // echo "Failed to fetch next page: " . $nextPageUrl . PHP_EOL;
                 break;
             }
 
@@ -164,9 +164,6 @@ function parseCategoryPage($html, $categoryUrl) {
 
     return $products;
 }
-
-
-
 
 // Function to remove currency symbols from price
 function filterPrice($price) {
