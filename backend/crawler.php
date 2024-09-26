@@ -82,7 +82,7 @@ function crawlCategoriesConcurrently($categoryUrls) {
     // Collect responses and fetch additional pages if necessary
     foreach ($curlHandles as $index => $ch) {
         $response = curl_multi_getcontent($ch);
-        $categoryData[$index] = parseCategoryPage($response, $categoryUrls[$index]); // Parse category page
+        $categoryData[$index] = parseCategoryPage($response, $categoryUrls[$index]); 
         curl_multi_remove_handle($multiCurl, $ch);
         curl_close($ch);
     }
@@ -95,7 +95,7 @@ function crawlCategoriesConcurrently($categoryUrls) {
 
 function parseCategoryPage($html, $categoryUrl) {
     $products = [];
-    $bookId = 0; // Initialize ID counter
+    $bookId = 0; 
 
     do {
         // Initialize DOM and XPath for the current page
@@ -118,13 +118,13 @@ function parseCategoryPage($html, $categoryUrl) {
 
             // Store the book details with ID and name
             $products[$bookId] = [
-                'id' => $bookId,  // Assign an ID number
-                'name' => $bookName,  // Add the book name
-                'price' => filterPrice($bookPrice), // Remove fiat symbol from price
+                'id' => $bookId,
+                'name' => $bookName,
+                'price' => filterPrice($bookPrice),
                 'rating' => getBookRating($bookRating),
             ];
 
-            $bookId++; // Increment the ID counter
+            $bookId++;
         }
 
         // Check if there's a "next" button
@@ -156,7 +156,6 @@ function parseCategoryPage($html, $categoryUrl) {
             }
 
         } else {
-            // If no next page, stop the loop
             $html = null;
         }
 
