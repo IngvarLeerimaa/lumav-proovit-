@@ -82,8 +82,93 @@ function removeLoading() {
 
 
 function parseData(webData) {
+    console.log("Parsin Datat")
     console.log(webData);
+    let byRating = getRatingsList(webData[0])
+    console.log(byRating)
+    renderScatter(byRating)
 }
+
+function getRatingsList(data) {
+    console.log(typeof(data));
+    console.log(data);
+    if (!data || !data.categories) {
+        console.error("Data or categories are undefined");
+        return [];
+    }
+
+    let ratingsList = [];
+
+    Object.keys(data.categories).forEach(category => {
+        let totalRating = 0;
+        let itemCount = 0;
+
+        Object.keys(data.categories[category]).forEach(itemKey => {
+            let item = data.categories[category][itemKey];
+            
+            // Check if item exists and has a rating
+            if (item && typeof item.rating !== 'undefined' && item.rating > 0) {
+                totalRating += item.rating;
+                itemCount++;
+            }
+        });
+
+        // Calculate the average rating and round up to one decimal
+        let averageRating = itemCount > 0 ? Math.ceil((totalRating / itemCount) * 10) / 10 : 0;
+
+        // Add category, average rating, and product count to the list
+        ratingsList.push({ 
+            category: category, 
+            averageRating: averageRating, 
+            productCount: itemCount 
+        });
+    });
+
+    return ratingsList;
+}
+
+function renderScatter(categoriesData) {
+    const ctx = document.getElementById('scatterChart').getContext('2d');
+
+    // Prepare data for the scatter plot
+    const data = categoriesData.map(item => ({
+        x: item.category,
+        y: item.productCount
+    }));
+
+    // Create the scatter plot
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Number of Products',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',  // Light blue
+                borderColor: 'rgba(54, 162, 235, 1)',  // Blue
+                pointRadius: 5
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Category'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Products'
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 function logOut() {
     console.log("Logged out.");
