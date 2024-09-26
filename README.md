@@ -58,6 +58,7 @@ root/
 # Kasutatud tehnoloogiad
 ### Back-end:
 - PHP - 8.3.11
+- Composer
 - **LISA KASUTATUD ASJAD**
 
 ### Front-end:
