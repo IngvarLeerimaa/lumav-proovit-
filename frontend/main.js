@@ -45,6 +45,7 @@ function addSearchAndLogoutButton() {
     logoutButton.addEventListener('click', function() {
         localStorage.removeItem('token');
         location.replace('index.html');
+        console.log("Logged Out!")
     });
 }
 
@@ -87,6 +88,7 @@ function parseData(webData) {
     let byRating = getRatingsList(webData[0])
     console.log(byRating)
     renderScatter(byRating)
+    renderBarChart(byRating)
 }
 
 function getRatingsList(data) {
@@ -126,25 +128,75 @@ function getRatingsList(data) {
 
     return ratingsList;
 }
+function renderBarChart(categoriesData) {
+    const ctx = document.getElementById('barChart').getContext('2d');
+
+    const sortedData = categoriesData.sort((a, b) => b.averageRating - a.averageRating);
+
+    const categoryLabels = sortedData.map(item => item.category);
+    const averageRatings = sortedData.map(item => item.averageRating);
+
+    const barColor = 'rgba(54, 162, 235, 0.8)';
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categoryLabels,  // Category names as x-axis labels
+            datasets: [{
+                label: 'Average Rating',
+                data: averageRatings,
+                backgroundColor: barColor,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Categories Ranked by Average Rating'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Average Rating'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Category'
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 function renderScatter(categoriesData) {
     const ctx = document.getElementById('scatterChart').getContext('2d');
 
-    // Prepare data for the scatter plot
     const data = categoriesData.map(item => ({
         x: item.category,
         y: item.productCount
     }));
 
-    // Create the scatter plot
     new Chart(ctx, {
         type: 'scatter',
         data: {
             datasets: [{
                 label: 'Number of Products',
                 data: data,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',  // Light blue
-                borderColor: 'rgba(54, 162, 235, 1)',  // Blue
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
                 pointRadius: 5
             }]
         },
@@ -167,11 +219,6 @@ function renderScatter(categoriesData) {
             }
         }
     });
-}
-
-
-function logOut() {
-    console.log("Logged out.");
 }
 
 document.addEventListener('DOMContentLoaded', function() {
