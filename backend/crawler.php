@@ -79,10 +79,10 @@ function crawlCategoriesConcurrently($categoryUrls) {
         curl_multi_select($multiCurl);
     } while ($active);
 
-    // Collect responses
+    // Collect responses and fetch additional pages if necessary
     foreach ($curlHandles as $index => $ch) {
         $response = curl_multi_getcontent($ch);
-        $categoryData[$index] = parseCategoryPage($response); // Parse each category page for products
+        $categoryData[$index] = parseCategoryPage($response, $categoryUrls[$index]); // Parse category page
         curl_multi_remove_handle($multiCurl, $ch);
         curl_close($ch);
     }
@@ -93,40 +93,80 @@ function crawlCategoriesConcurrently($categoryUrls) {
     return $categoryData;
 }
 
-function parseCategoryPage($html) {
+function parseCategoryPage($html, $categoryUrl) {
     $products = [];
-    $bookId = 1; // Initialize ID counter
+    $bookId = 0; // Initialize ID counter
 
-    $dom = new DOMDocument();
-    @$dom->loadHTML($html);
-    $xpath = new DOMXPath($dom);
+    do {
+        // Initialize DOM and XPath for the current page
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new DOMXPath($dom);
 
-    // Get all book details from the category (subcategory)
-    $bookNodes = $xpath->query("//article[@class='product_pod']");
+        // Get all book details from the current category page
+        $bookNodes = $xpath->query("//article[@class='product_pod']");
 
-    foreach ($bookNodes as $node) {
-        $bookNameNode = $xpath->query(".//h3/a", $node);
-        $bookName = $bookNameNode->length > 0 ? trim($bookNameNode->item(0)->textContent) : 'Unknown Title'; // Error handling
+        foreach ($bookNodes as $node) {
+            $bookNameNode = $xpath->query(".//h3/a", $node);
+            $bookName = $bookNameNode->length > 0 ? trim($bookNameNode->item(0)->textContent) : 'Unknown Title'; // Error handling
 
-        $bookPriceNode = $xpath->query(".//p[@class='price_color']", $node);
-        $bookPrice = $bookPriceNode->length > 0 ? trim($bookPriceNode->item(0)->textContent) : '0.00'; // Error handling
+            $bookPriceNode = $xpath->query(".//p[@class='price_color']", $node);
+            $bookPrice = $bookPriceNode->length > 0 ? trim($bookPriceNode->item(0)->textContent) : '0.00'; // Error handling
 
-        $bookRatingNode = $xpath->query(".//p[contains(@class, 'star-rating')]", $node);
-        $bookRating = $bookRatingNode->length > 0 ? $bookRatingNode->item(0)->getAttribute('class') : ''; // Error handling
+            $bookRatingNode = $xpath->query(".//p[contains(@class, 'star-rating')]", $node);
+            $bookRating = $bookRatingNode->length > 0 ? $bookRatingNode->item(0)->getAttribute('class') : ''; // Error handling
 
-        // Store the book details with ID and name, remove URL
-        $products[$bookId] = [
-            'id' => $bookId,  // Assign an ID number
-            'name' => $bookName,  // Add the book name
-            'price' => filterPrice($bookPrice), // Remove fiat symbol from price
-            'rating' => getBookRating($bookRating),
-        ];
+            // Store the book details with ID and name
+            $products[$bookId] = [
+                'id' => $bookId,  // Assign an ID number
+                'name' => $bookName,  // Add the book name
+                'price' => filterPrice($bookPrice), // Remove fiat symbol from price
+                'rating' => getBookRating($bookRating),
+            ];
 
-        $bookId++; // Increment the ID counter
-    }
+            $bookId++; // Increment the ID counter
+        }
+
+        // Check if there's a "next" button
+        $nextPageNode = $xpath->query("//li[@class='next']/a");
+
+        if ($nextPageNode->length > 0) {
+            // Build the correct next page URL
+            $nextPageHref = $nextPageNode->item(0)->getAttribute('href');
+
+            // Handle URLs that end with 'index.html' or have the proper page structure
+            if (strpos($categoryUrl, 'index.html') !== false) {
+                // If the URL ends with 'index.html', replace it with the next page href
+                $nextPageUrl = str_replace('index.html', '', $categoryUrl) . ltrim($nextPageHref, '/');
+            } else {
+                // Otherwise, just append the next page href to the category URL
+                $nextPageUrl = rtrim($categoryUrl, '/') . '/' . ltrim($nextPageHref, '/');
+            }
+
+          /*   // Debugging: Log the next page URL being fetched
+            echo "Fetching next page: " . $nextPageUrl . PHP_EOL; */
+
+            // Fetch the next page content
+            $html = @file_get_contents($nextPageUrl);
+
+            if ($html === false) {
+                // Stop the loop if the next page couldn't be fetched
+                echo "Failed to fetch next page: " . $nextPageUrl . PHP_EOL;
+                break;
+            }
+
+        } else {
+            // If no next page, stop the loop
+            $html = null;
+        }
+
+    } while ($html !== null); // Continue while there is a next page
 
     return $products;
 }
+
+
+
 
 // Function to remove currency symbols from price
 function filterPrice($price) {
