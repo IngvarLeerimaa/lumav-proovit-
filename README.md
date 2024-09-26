@@ -2,13 +2,42 @@
 
 Järgneva proovitöö eesmärk on luua web-scraper kasutades php back-endi ja Vanilla JavaScripti. Soovitatud on kasutada AI'd ülesande lahendamisel.
 
+# Kasutamine
+
+Mina jooksutasin kahte serverit kasutades composerit ja VSCode Live server pluginat. Võid kasutada endale sobivamat varianti.
+- **Klooni repo**
+- **Backend:**
+    
+    Navigeeri backend kausta ja kasuta composeri keywordi start. Näide ```composer start```
+    
+    *Vajadusel composer install/composer update*
+
+    Võib ka kasutada lihtsalt käsklust ```php -S localhost:8080```
+    - **backend sulgemine:**
+        Terminalis ```Ctrl + C```
+        Või manuaalselt
+        ``` ps aux | grep php``` ja ``` kill <PID>```
+-   **Frontend:**
+    
+    Installi Live Server plugin.
+    Ava Command pallette (```Ctrl + shift + P)```) ja vali **Live Server: Open with Live Server** või kasuta ikooni all paremas nurgas.
+    - **frontend sulgemine:**
+        Paremal all ikoonist või ava controll pallette ja vali "Live Server: Stop Live Server"
+
+**Default pordid:**
+- Backend: 8080
+
+    *Vajadusel saab muuta porte failides composer.json(ln15), index.js(ln21), main.js.*
+- Frontend: 5000
+
+    *Muutmiseks vt Live Server settingutesse.*
 # Eesmärgid
 
 ### Back-end:
  - Loo PHPs API endpoint, mille kaudu kraabid e-poodide avalehti. (Veebipoe urlid võivad volla teksti failis.)
  - API analüüsib lehti vastavalt struktuurile (nimekirjad, hinnad, kategooriad jms)
 - Kategooriad on lisitina
-- Lisa turvalisus tagamiseks meetmeid. (JWT?)
+- Lisa turvalisus tagamiseks meetmeid.
 - Returni JSON
 
 ### Front-end
@@ -16,7 +45,7 @@ Järgneva proovitöö eesmärk on luua web-scraper kasutades php back-endi ja Va
 - Lisa searchbar
 - Lisagraafikud (hinnad, kategooriad jms) (piechart, barchart vast kõige lihtsam. Äkki kasutada apexcharti?)
 - Kategooriad tableina
-- Viis scrape näitamiseks reaalajas???????
+- Viis scrape näitamiseks reaalajas??????? vbl lihtasalt loading cursor vms.
 
 ### Kuvamine
 
@@ -38,27 +67,33 @@ Järgneva proovitöö eesmärk on luua web-scraper kasutades php back-endi ja Va
 
 # Testing
 
-- Lihtne repo clone ja jooksutamine erinevate urlidega.
+- Repo clone ja jooksutamine.
 
 # Strucktuur
-
+# LOO funktsioonidele eraldi failid et veits loetavam oleks.
 ```
 root/
 ├── backend/
 │   ├── index.php           # Main API file
 │   ├── crawler.php         # Crawling logic
 │   └── config.php          # Configuration (API keys, etc.)
+│   └── urls.txt            # List of e-commerce homepages
 ├── frontend/
-│   ├── index.html          # Dashboard page
-│   └── app.js              # JavaScript for frontend logic
-├── urls.txt                # List of e-commerce homepages
+│   ├── favicon.ico         # Icon
+│   ├── index.html          # Login
+│   ├── main.html           # Graphs and data
+│   ├── index.css           # Login UI
+│   ├── main.css            # Main UI
+│   ├── index.js            # Handles login and token
+│   └── main.js             # Handles frontend Graphs and UI
 └── README.md               # Project documentation
 ```
 
 # Kasutatud tehnoloogiad
 ### Back-end:
 - PHP - 8.3.11
-- Composer
+- Composer 2.7.9
+- sunra 1.5.2
 - **LISA KASUTATUD ASJAD**
 
 ### Front-end:

@@ -18,7 +18,7 @@ function login() {
             const credentials = btoa(`${email.value}:${password.value}`);
             
             // Send credentials to server for authentication
-            const response = await fetch('https://localhost:8080/login', {
+            const response = await fetch('http://localhost:8080/login.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,13 +43,14 @@ function login() {
             } else {
                 // Save token to localStorage
                 localStorage.setItem('token', token.token);
+                
                 // Redirect user to main.html
-                location.replace('main.html');
+                window.location.href = 'main.html';  // Siin toimub ümber suunamine
             }
         });
     } else {
         // If token exists, redirect user to main.html
-        location.replace('main.html');
+        window.location.href = 'main.html';  // Siin toimub ümber suunamine
     }
 }
 

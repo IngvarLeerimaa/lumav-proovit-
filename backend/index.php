@@ -2,12 +2,16 @@
 require_once __DIR__ . '/vendor/autoload.php';  
 require_once 'crawler.php';
 
-//API key kontroll
-// if (!isset($_GET['api_key']) || $_GET['api_key'] !== API_KEY) {
-//     http_response_code(403);
-//     echo json_encode(['error' => 'Unauthorized']);
-//     exit;
-// }
+// Set headers to allow cross-origin requests (CORS)
+header('Access-Control-Allow-Origin: *');  // Lubab päringud kõikidest päritoludest
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');  // Lubab vajalikud meetodid
+header('Access-Control-Allow-Headers: Content-Type, Authorization');  // Lubab vajalikud päised
+
+// Handle OPTIONS preflight request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 // Käivita veebilehe kaapimise funktsioon
 $result = crawlWebsites();
