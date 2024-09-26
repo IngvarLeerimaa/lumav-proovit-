@@ -4,6 +4,7 @@ Järgneva proovitöö eesmärk on luua web-scraper kasutades php back-endi ja Va
 
 # Kasutamine
 
+**Entry point:** ```https:localhost:5500/frontend/```
 Mina jooksutasin kahte serverit kasutades composerit ja VSCode Live server pluginat. Võid kasutada endale sobivamat varianti.
 - **Klooni repo**
 - **Backend:**
@@ -27,8 +28,8 @@ Mina jooksutasin kahte serverit kasutades composerit ja VSCode Live server plugi
 **Default pordid:**
 - Backend: 8080
 
-    *Vajadusel saab muuta porte failides composer.json(ln15), index.js(ln21), main.js.*
-- Frontend: 5000
+    *Vajadusel saab muuta porte failides backend/composer.json(ln15), frontend/index.js(ln21), frontend/main.js.*
+- Frontend: 5500
 
     *Muutmiseks vt Live Server settingutesse.*
 # Eesmärgid

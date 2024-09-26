@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-// Käivita veebilehe kaapimise funktsioon
 $result = crawlWebsites();
 
 header('Content-Type: application/json');

@@ -6,13 +6,11 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Handle OPTIONS preflight request
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Handle login request
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Extract the Authorization header from $_SERVER superglobal
     if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -36,22 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Check if the email and password match
         if ($storedEmail == $email && $storedPassword == $password) {
-            // Generate a simple token (in real applications, use JWT or more secure tokens)
-            $token = bin2hex(random_bytes(16)); // Generate a random token
+            $token = bin2hex(random_bytes(16));
 
-            // Respond with the token
             echo json_encode(['token' => $token]);
             exit;
         }
     }
 
-    // If authentication fails
     http_response_code(403);
     echo json_encode(['error' => 'Invalid email or password']);
     exit;
 }
 
-// If request method is not POST
 http_response_code(405);
 echo json_encode(['error' => 'Method not allowed']);
 ?>

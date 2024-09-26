@@ -69,5 +69,7 @@ i{
     font-weight: bolder;
     text-align: center;
     display: none;
-    font-style: italic; 
+    font-style: italic;
+    
+    background-color: #d4d4d4;
 }
