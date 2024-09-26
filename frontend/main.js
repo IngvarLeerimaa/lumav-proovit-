@@ -43,7 +43,8 @@ function addSearchAndLogoutButton() {
     });
 
     logoutButton.addEventListener('click', function() {
-        logOut();
+        localStorage.removeItem('token');
+        location.replace('index.html');
     });
 }
 
