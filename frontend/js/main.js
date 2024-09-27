@@ -1,4 +1,4 @@
-//Inits query to backend with GET req, if !err sends it to parseDate function"
+/**Inits query to backend with GET req, if !err sends it to parseDate function"*/
 function query() {
     console.log("we are searching");
     const token = localStorage.getItem('token');
@@ -10,7 +10,7 @@ function query() {
 
     addLoading();
     
-    fetch('http://localhost:8080/index.php', {
+    fetch('http://localhost:8080/api/index.php', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ function query() {
     });
 }
 
-//Creates buttons and adds button listners
+/**Creates buttons and adds button listners*/
 function addSearchAndLogoutButton() {
     const searchButton = document.createElement('button');
     searchButton.textContent = "Search";
@@ -51,7 +51,7 @@ function addSearchAndLogoutButton() {
     });
 }
 
-//Adds loading animation by creating the div with .loader
+/**Adds loading animation by creating the div with .loader*/
 function addLoading() {
     console.log("We are waiting...");
 
@@ -66,7 +66,7 @@ function addLoading() {
     }
 }
 
-//manually removes loading
+/**manually removes loading*/
 function removeLoading() {
     console.log("Well that took some time..");
     
@@ -83,7 +83,7 @@ function removeLoading() {
     }
 }
 
-//Middle function that 
+/**Middle function that transforms data and sends it to render differenct charts*/ 
 function parseData(webData) {
     console.log("Parsin Datat")
     console.log(webData);
@@ -96,7 +96,7 @@ function parseData(webData) {
     renderBooksPieChart(parsedObj)
 }
 
-//Takes jsonData, parses it for different charts and calculates avrage price/rating
+/**Takes jsonData, parses it for different charts and calculates avrage price/rating*/
 function getParsedObj(data) {
     console.log(typeof(data));
     console.log(data);
@@ -144,7 +144,7 @@ function getParsedObj(data) {
     return ratingsList;
 }
 
-//To make main.html dumber
+/**To make main.html dumber, creates divs for canvas*/
 function createCanvasElements() {
     const canvasInfo = [
         { id: 'booksPieChart', className: 'circle' },
@@ -162,6 +162,8 @@ function createCanvasElements() {
         document.body.appendChild(canvas);
     });
 }
+
+/** renders Barchart and does needed calculations */
 function renderBarChart(categoriesData) {
     const ctx = document.getElementById('barChart').getContext('2d');
 
@@ -214,6 +216,7 @@ function renderBarChart(categoriesData) {
     });
 }
 
+/** renders Scatter chart and does needed calculations */
 function renderScatter(categoriesData) {
     const ctx = document.getElementById('scatterChart').getContext('2d');
 
@@ -255,6 +258,8 @@ function renderScatter(categoriesData) {
         }}
     });
 }
+
+/** renders Line chart and does needed calculations */
 function renderLineChart(categoriesData) {
     const ctx = document.getElementById('lineChart').getContext('2d');
 
@@ -306,6 +311,7 @@ function renderLineChart(categoriesData) {
     });
 }
 
+/** renders piechart and does needed calculations */
 function renderBooksPieChart(categoriesData) {
     const ctx = document.getElementById('booksPieChart').getContext('2d');
 

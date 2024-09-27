@@ -1,4 +1,4 @@
-//Login logic with post request, succesful login or token present => will be redirected to main.html.
+/**Login logic with post request, succesful login or token present => will be redirected to main.html.*/
 function login() {
     let token = localStorage.getItem('token');
 
@@ -14,7 +14,7 @@ function login() {
             
             const credentials = btoa(`${email.value}:${password.value}`);
             
-            const response = await fetch('http://localhost:8080/login.php', {
+            const response = await fetch('http://localhost:8080/api/login.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,7 +22,18 @@ function login() {
                 }
             });
 
-            let token = await response.json();
+            try {
+                token = await response.json();
+            } catch (err) {
+                let err2 = document.getElementById('err');
+                err2.innerHTML = "Internal error - check console"
+                err2.style.display = 'block';
+                setTimeout(() => {
+                    err2.style.display = 'none';
+                }, 3000);
+                removeLoading();
+                throw new Error('Error:', token.error);
+            }
 
             if (token.error) {
                 removeLoading();
@@ -51,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
  });
 
-//Creates innerHTML
+/**to keep html dumber, Creates innerHTML*/
 function createForm(){
 
     
@@ -119,7 +130,7 @@ window.addEventListener("load", () => {
     }
 });
 
-//TODO:Eraldi fail addLoadingu ja removeLoadingu jaoks
+/** adds Loading animation */
 function addLoading() {
     console.log("We are waiting...");
 
@@ -134,7 +145,7 @@ function addLoading() {
     }
 }
 
-//manually removes loading
+/** manually removes loading */
 function removeLoading() {
     console.log("Well that took some time..");
     

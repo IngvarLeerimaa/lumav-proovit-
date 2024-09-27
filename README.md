@@ -32,7 +32,7 @@ Mina jooksutasin kahte serverit kasutades composeri keyword `start` ja VSCode Li
 - Frontend: 5500
 
     *Muutmiseks vt Live Server settingutesse.*
-# Eesmärgid
+# Tööjuhend
 
 ### Back-end:
  - Loo PHPs API endpoint, mille kaudu kraabid e-poodide avalehti. (Veebipoe urlid võivad volla teksti failis.)
@@ -43,23 +43,15 @@ Mina jooksutasin kahte serverit kasutades composeri keyword `start` ja VSCode Li
 
 ### Front-end
 - Lihtne Dashboard, mis kuvab API vastused
-- Lisa searchbar
-- Lisagraafikud (hinnad, kategooriad jms) (piechart, barchart vast kõige lihtsam. Äkki kasutada apexcharti?)
-- Kategooriad tableina
-- Viis scrape näitamiseks reaalajas??????? vbl lihtasalt loading cursor vms.
+- Lisa search NUPP
+- Lisagraafikud (hinnad, kategooriad jms)
+- Viis scrape näitamiseks reaalajas
 
 ### Kuvamine
 
 - Toodete loetelu ja hinnad
 - Allahindlkused ja pakkumised
-- **Required** Populaarsed kategoorida: Enim sindatud kategooriad peavad olema kuvatud. 
-
-### Graafikud
-
-- Piechart - Kui palju tooteid esinab iga kategooria
-- Column Chart with datalabels - Toodete hinnavahemik ja jaotus
-- line chart - Allahindlused
-- line chart with data points- Populaarsed trendid, ehk tooted mida vaadatakse kõige enam.
+- **Required** Populaarsed kategoorida: Enim esindatud kategooriad peavad olema kuvatud. 
 
 ## Guidelines
 
@@ -71,24 +63,32 @@ Mina jooksutasin kahte serverit kasutades composeri keyword `start` ja VSCode Li
 - Repo clone ja jooksutamine.
 
 # Strucktuur
-# LOO funktsioonidele eraldi failid et veits loetavam oleks.
-```
 root/
 ├── backend/
-│   ├── index.php           # Main API file
-│   ├── crawler.php         # Crawling logic
-│   └── config.php          # Configuration (API keys, etc.)
-│   └── urls.txt            # List of e-commerce homepages
+│   ├── api/
+│   │   ├── login.php         # API päringute töötlemine (login)
+│   │   ├── crawler.php       # Crawlimise API ja loogika
+│   │   ├── index.php         # API põhifail
+│   └── config/
+│       ├── config.php        # Konfiguratsiooni failid (API võtmed jms)
+│       ├── token.txt         # Tokenite fail
+│       ├── urls.txt          # E-kaubanduse URLide loend
+│   ├── vendor/               # Composer'i kolmanda osapoole teegid
+│   ├── composer.json         # Composer'i sõltuvused
+│   ├── composer.lock         # Composer'i lukustusfail
 ├── frontend/
-│   ├── favicon.ico         # Icon
-│   ├── index.html          # Login
-│   ├── main.html           # Graphs and data
-│   ├── index.css           # Login UI
-│   ├── main.css            # Main UI
-│   ├── index.js            # Handles login and token
-│   └── main.js             # Handles frontend Graphs and UI
-└── README.md               # Project documentation
-```
+│   ├── assets/
+│   │   ├── favicon.ico       # Favicon
+│   ├── css/
+│   │   ├── index.css         # Login UI stiilid
+│   │   ├── main.css          # Peamise UI stiilid
+│   ├── js/
+│   │   ├── index.js          # Login JS
+│   │   ├── main.js           # Peamise lehe JS (graafikud, UI)
+│   ├── index.html            # Login leht
+│   ├── main.html             # Graafikute ja andmete leht
+├── README.md                 # Projekti dokumentatsioon
+
 
 # Kasutatud tehnoloogiad
 ### Back-end:
