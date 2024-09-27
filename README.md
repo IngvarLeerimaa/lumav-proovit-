@@ -191,5 +191,7 @@ root/
 ### Nõuded
 
 - PHP 8.0 või uuem versioon
-- Composer
 - Brauseri tugi JavaScripti ja HTML5 jaoks
+
+### Soovitatud
+- Composer

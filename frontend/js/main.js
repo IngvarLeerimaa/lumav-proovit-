@@ -15,7 +15,7 @@
  */
 
 function query() {
-    console.log("we are searching");
+    /* console.log("we are searching"); */
     const token = localStorage.getItem('token');
     
     if (!token) {
@@ -75,7 +75,7 @@ function addSearchAndLogoutButton() {
     logoutButton.addEventListener('click', function() {
         localStorage.removeItem('token');
         location.replace('index.html');
-        console.log("Logged Out!")
+        /* console.log("Logged Out!") */
     });
 }
 
@@ -94,7 +94,7 @@ function addSearchAndLogoutButton() {
  */
 
 function addLoading() {
-    console.log("We are waiting...");
+    /* console.log("We are waiting..."); */
 
     let loader = document.querySelector('.loader');
     
@@ -121,7 +121,7 @@ function addLoading() {
  * @return void
  */
 function removeLoading() {
-    console.log("Well that took some time..");
+    /* console.log("Well that took some time.."); */
     
     const loader = document.querySelector('.loader');
     
@@ -157,10 +157,10 @@ function removeLoading() {
  */
 
 function parseData(webData) {
-    console.log("Parsin Datat")
-    console.log(webData);
+    /* console.log("Parsin Datat") */
+    /* console.log(webData); */
     let parsedObj = getParsedObj(webData[0])
-    console.log(parsedObj)
+    /* console.log(parsedObj) */
     createCanvasElements()
     renderScatter(parsedObj)
     renderLineChart(parsedObj)
@@ -187,8 +187,8 @@ function parseData(webData) {
  */
 
 function getParsedObj(data) {
-    console.log(typeof(data));
-    console.log(data);
+    /* console.log(typeof(data));
+    console.log(data); */
     if (!data || !data.categories) {
         console.error("Data or categories are undefined");
         return [];

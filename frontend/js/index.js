@@ -200,7 +200,7 @@ window.addEventListener("load", () => {
  * @return void
  */
 function addLoading() {
-    console.log("We are waiting...");
+    /* console.log("We are waiting..."); */
 
     let loader = document.querySelector('.loader');
     
@@ -227,7 +227,7 @@ function addLoading() {
  * @return void
  */
 function removeLoading() {
-    console.log("Well that took some time..");
+    /* console.log("Well that took some time.."); */
     
     const loader = document.querySelector('.loader');
     
