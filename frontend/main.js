@@ -63,10 +63,6 @@ function addLoading() {
     }
 }
 
-// Example usage:
-addLoading();
-
-
 function removeLoading() {
     console.log("Well that took some time..");
     
