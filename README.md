@@ -166,7 +166,7 @@ root/
 - Parandada kraapimisprotsessi efektiivsust
 - Tõhustada veakäsitlust ja kasutajale tagasiside andmist nii frontendis kui ka backendis
 - Luua turvaline ja usaldusväärne andmebaas kasutajate andmete haldamiseks, et parandada autentimise ja andmehoidmise protsessi
-
+- Parandada frontendi responsiivsust, et tagada sujuv ja optimeeritud kasutajakogemus erinevatel seadmetel ja ekraanisuurustel
 
 
 ### Kasutatud tehnoloogiad:
