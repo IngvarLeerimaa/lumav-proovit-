@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     background: #333333;
-    transition: opacity 0.75s, visibility 0.75s;
+    transition: opacity 1s, visibility 0.75s;
   }
   
   .loader--hidden {
@@ -22,9 +22,9 @@
     width: 75px;
     height: 75px;
     border: 15px solid #dddddd;
-    border-top-color: rgb(1, 11, 145);
+    border-top-color: rgba(54, 162, 235, 0.8);
     border-radius: 50%;
-    animation: loading 0.75s ease infinite;
+    animation: loading 1s ease infinite;
   }
   
   @keyframes loading {
@@ -35,3 +35,30 @@
       transform: rotate(1turn);
     }
   }
+
+/* graphs */
+
+.box {
+  width: 1200px;
+  height: 600px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ddddddd0;
+  padding: 20px;
+
+}
+
+.circle {
+  padding: 10px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body{
+  background-color: #4d4c4c;
+}

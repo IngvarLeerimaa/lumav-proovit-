@@ -3,9 +3,9 @@
 Järgneva proovitöö eesmärk on luua web-scraper kasutades php back-endi ja Vanilla JavaScripti. Soovitatud on kasutada AI'd ülesande lahendamisel.
 
 # Kasutamine
+Mina jooksutasin kahte serverit kasutades composeri keyword `start` ja VSCode Live server pluginat. Võid kasutada endale sobivamat varianti, kuid ma ei taga samaväärse funktsionaalsuse.
 
-**Entry point:** ```https:localhost:5500/frontend/```
-Mina jooksutasin kahte serverit kasutades composerit ja VSCode Live server pluginat. Võid kasutada endale sobivamat varianti.
+**Entry point:** [https:localhost:5500/frontend](https:localhost:5500/frontend/)
 - **Klooni repo**
 - **Backend:**
     
@@ -28,7 +28,7 @@ Mina jooksutasin kahte serverit kasutades composerit ja VSCode Live server plugi
 **Default pordid:**
 - Backend: 8080
 
-    *Vajadusel saab muuta porte failides backend/composer.json(ln15), frontend/index.js(ln21), frontend/main.js.*
+    *Vajadusel saab muuta porte failides backend/composer.json(ln15), frontend/index.js(ln21), frontend/main.js(ln12).*
 - Frontend: 5500
 
     *Muutmiseks vt Live Server settingutesse.*
@@ -102,7 +102,7 @@ root/
 - HTML
 - CSS
 - Fetch API
-- **CHARTi ASI**
+- Chart.js
 - JSON
 
 ### AI:

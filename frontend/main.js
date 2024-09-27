@@ -80,20 +80,18 @@ function removeLoading() {
     }
 }
 
-
-
 function parseData(webData) {
     console.log("Parsin Datat")
     console.log(webData);
-    let byRating = getRatingsList(webData[0])
-    console.log(byRating)
-    renderScatter(byRating)
-    renderBarChart(byRating)
-    renderLineChart(byRating)
-    renderBooksPieChart()
+    let parsedObj = getParsedObj(webData[0])
+    console.log(parsedObj)
+    renderScatter(parsedObj)
+    renderLineChart(parsedObj)
+    renderBarChart(parsedObj)
+    renderBooksPieChart(parsedObj)
 }
 
-function getRatingsList(data) {
+function getParsedObj(data) {
     console.log(typeof(data));
     console.log(data);
     if (!data || !data.categories) {
@@ -102,6 +100,7 @@ function getRatingsList(data) {
     }
 
     let ratingsList = [];
+    let totalProducts = 0; // Initialize total product counter
 
     Object.keys(data.categories).forEach(category => {
         let totalRating = 0;
@@ -124,6 +123,8 @@ function getRatingsList(data) {
         let averageRating = itemCount > 0 ? Math.round((totalRating / itemCount) * 100) / 100 : 0;
         let averagePrice = itemCount > 0 ? Math.round((totalPrice / itemCount) * 100) / 100 : 0;
 
+        totalProducts += itemCount; // Increment total products with item count for this category
+
         ratingsList.push({ 
             category: category, 
             averageRating: averageRating, 
@@ -132,8 +133,11 @@ function getRatingsList(data) {
         });
     });
 
+    ratingsList.totalProductCount = totalProducts;
+
     return ratingsList;
 }
+
 
 function renderBarChart(categoriesData) {
     const ctx = document.getElementById('barChart').getContext('2d');
@@ -199,7 +203,7 @@ function renderScatter(categoriesData) {
         type: 'scatter',
         data: {
             datasets: [{
-                label: 'Number of Products',
+                label: 'Number of Products by Category',
                 data: data,
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -222,8 +226,10 @@ function renderScatter(categoriesData) {
                         text: 'Number of Products'
                     }
                 }
-            }
-        }
+            },
+            layout: {
+                backgroundColor: 'white'
+        }}
     });
 }
 function renderLineChart(categoriesData) {
@@ -277,34 +283,65 @@ function renderLineChart(categoriesData) {
     });
 }
 
-function renderBooksPieChart() {
+function renderBooksPieChart(categoriesData) {
     const ctx = document.getElementById('booksPieChart').getContext('2d');
 
-    const data = {
-        labels: ['Books'],
-        datasets: [{
-            data: [100],
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
-    };
+    const totalProducts = categoriesData.reduce((sum, category) => sum + category.productCount, 0);
+    
+    const sortedCategories = categoriesData.sort((a, b) => b.productCount - a.productCount);
+    
+    const topCategories = sortedCategories.slice(0, 5);
+    
+    const otherProductCount = sortedCategories.slice(5).reduce((sum, category) => sum + category.productCount, 0);
+    
+    const categoryLabels = topCategories.map(category => category.category).concat("Other");
+    const productCounts = topCategories.map(category => category.productCount).concat(otherProductCount);
+    
+    const categoryPercentages = productCounts.map(count => (count / totalProducts * 100).toFixed(2));
+    
+    const backgroundColors = categoryLabels.map((_, index) => `rgba(${54 + index * 20}, 162, 235, 0.8)`);
 
     new Chart(ctx, {
         type: 'pie',
-        data: data,
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: productCounts,
+                backgroundColor: backgroundColors,
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }]
+        },
         options: {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top'
+                    position: 'right',
+                    labels: {
+                        boxWidth: 10,
+                        color: 'white'
+                    }
                 },
                 title: {
                     display: true,
-                    text: '100% of Products are Books'
+                    text: 'Top 5 Categories by Product Count',
+                    color: 'white'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            const label = categoryLabels[tooltipItem.dataIndex];
+                            const value = productCounts[tooltipItem.dataIndex];
+                            const percentage = categoryPercentages[tooltipItem.dataIndex];
+                            return `${label}: ${value} products (${percentage}%)`;
+                        }
+                    }
                 }
             },
-            responsive: true
+            responsive: true,
+            layout: {
+                backgroundColor: '#dddddd'
+            }
         }
     });
 }
