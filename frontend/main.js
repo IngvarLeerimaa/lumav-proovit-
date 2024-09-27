@@ -1,3 +1,4 @@
+//Inits query to backend with GET req, if !err sends it to parseDate function"
 function query() {
     console.log("we are searching");
     const token = localStorage.getItem('token');
@@ -27,6 +28,7 @@ function query() {
     });
 }
 
+//Creates buttons and adds button listners
 function addSearchAndLogoutButton() {
     const searchButton = document.createElement('button');
     searchButton.textContent = "Search";
@@ -49,6 +51,7 @@ function addSearchAndLogoutButton() {
     });
 }
 
+//Adds loading animation by creating the div with .loader
 function addLoading() {
     console.log("We are waiting...");
 
@@ -63,6 +66,7 @@ function addLoading() {
     }
 }
 
+//manually removes loading
 function removeLoading() {
     console.log("Well that took some time..");
     
@@ -79,6 +83,7 @@ function removeLoading() {
     }
 }
 
+//Middle function that 
 function parseData(webData) {
     console.log("Parsin Datat")
     console.log(webData);
@@ -91,6 +96,7 @@ function parseData(webData) {
     renderBooksPieChart(parsedObj)
 }
 
+//Takes jsonData, parses it for different charts and calculates avrage price/rating
 function getParsedObj(data) {
     console.log(typeof(data));
     console.log(data);
@@ -138,6 +144,7 @@ function getParsedObj(data) {
     return ratingsList;
 }
 
+//To make main.html dumber
 function createCanvasElements() {
     const canvasInfo = [
         { id: 'booksPieChart', className: 'circle' },
@@ -155,9 +162,6 @@ function createCanvasElements() {
         document.body.appendChild(canvas);
     });
 }
-
-
-
 function renderBarChart(categoriesData) {
     const ctx = document.getElementById('barChart').getContext('2d');
 
@@ -365,10 +369,13 @@ function renderBooksPieChart(categoriesData) {
     });
 }
 
+//Adds a animation
 document.addEventListener('DOMContentLoaded', function() {
+    addLoading()
     addSearchAndLogoutButton();
 });
 
+//Ends animation started at DomContentLoaded
 window.addEventListener("load", () => {
     const loader = document.querySelector(".loader");
 
