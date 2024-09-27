@@ -5,7 +5,6 @@ function crawlWebsites() {
     $categoryUrls = [];
     $categoryNames = [];
 
-    // First, get all the category URLs
     foreach ($urls as $url) {
         $html = @file_get_contents($url);
 

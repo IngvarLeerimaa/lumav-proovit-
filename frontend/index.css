@@ -4,6 +4,8 @@
     padding: 0;
     background-color: #4d4c4c;
 }
+
+/* Login cointainer */
 body {
     margin: 0;
     font-family: 'Inter',
@@ -49,6 +51,8 @@ i{
     font-size: 14px;
     background-color: #d4d4d4;
 }
+
+/* Submit button */
 #submit {
     background-color: rgba(22, 95, 138, 0.8);
     color: #fff;
@@ -63,6 +67,8 @@ i{
 #submit:hover {
     background-color: rgba(54, 162, 235, 0.8);
 }
+
+/* Errori korral */
 #err {
     color: red;
     font-size: 18px;

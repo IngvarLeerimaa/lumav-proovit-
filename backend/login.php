@@ -25,17 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $credentials = base64_decode($base64Credentials);
     list($email, $password) = explode(':', $credentials);
 
-    // Load the users from the text file (users.txt)
     $users = file('users.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     // Find the user by email and password
     foreach ($users as $user) {
         list($storedEmail, $storedPassword) = explode(':', $user);
         
-        // Check if the email and password match
+        //sends back token if credetsials match
         if ($storedEmail == $email && $storedPassword == $password) {
             $token = bin2hex(random_bytes(16));
 
+            file_put_contents('token.txt', $token);
+            
             echo json_encode(['token' => $token]);
             exit;
         }

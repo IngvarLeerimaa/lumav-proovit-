@@ -13,8 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$result = crawlWebsites();
+if ($_SERVER['REQUEST_METHOD'] == 'GET'){
 
-header('Content-Type: application/json');
-echo json_encode($result);
+    if(!isset($_SERVER['HTTP_AUTHORIZATION'])){
+        http_response_code(401);
+        echo json_encode(['error' => 'Authorization header missing']);
+        exit;
+    }
+
+    $auth = $_SERVER['HTTP_AUTHORIZATION'];
+    list(, $token) = explode(' ', $auth);
+    $savedToken = trim(file_get_contents('token.txt'));
+    if ($token !== $savedToken){
+        http_response_code(403);
+        echo json_encode(['error' => 'Invalid token']);
+        exit;
+    }
+    $result = crawlWebsites();
+    header('Content-Type: application/json');
+    echo json_encode($result);
+    exit;
+}
+
+http_response_code(405);
+echo json_encode(['error' => 'Method not allowed']);
 ?>
