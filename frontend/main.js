@@ -51,18 +51,21 @@ function addSearchAndLogoutButton() {
 
 function addLoading() {
     console.log("We are waiting...");
-    
+
     let loader = document.querySelector('.loader');
     
     if (!loader) {
         loader = document.createElement('div');
         loader.classList.add('loader');
-        
         document.body.appendChild(loader);
     } else {
         loader.classList.remove('loader--hidden');
     }
 }
+
+// Example usage:
+addLoading();
+
 
 function removeLoading() {
     console.log("Well that took some time..");
@@ -85,6 +88,7 @@ function parseData(webData) {
     console.log(webData);
     let parsedObj = getParsedObj(webData[0])
     console.log(parsedObj)
+    createCanvasElements()
     renderScatter(parsedObj)
     renderLineChart(parsedObj)
     renderBarChart(parsedObj)
@@ -137,6 +141,25 @@ function getParsedObj(data) {
 
     return ratingsList;
 }
+
+function createCanvasElements() {
+    const canvasInfo = [
+        { id: 'booksPieChart', className: 'circle' },
+        { id: 'scatterChart', className: 'box' },
+        { id: 'lineChart', className: 'box' },
+        { id: 'barChart', className: 'box' }
+    ];
+
+    canvasInfo.forEach(info => {
+        const canvas = document.createElement('canvas');
+        
+        canvas.id = info.id;
+        canvas.className = info.className;
+        
+        document.body.appendChild(canvas);
+    });
+}
+
 
 
 function renderBarChart(categoriesData) {
@@ -345,7 +368,6 @@ function renderBooksPieChart(categoriesData) {
         }
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     addSearchAndLogoutButton();
