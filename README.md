@@ -76,9 +76,9 @@ root/
 ```
 
 ### Backend
-- **api/**: Sisaldab API-t, mis vastutab veebisaitide kraapimise ja andmete töötlemise eest.
-    - **login.php**: Vastutab kasutaja autentimise ja tokenite genereerimise eest. Kasutajad saadavad oma mandaadid (email ja parool) ning saavad vastuseks unikaalse tokeni.
-    - **crawler.php**: Käivitab veebisaitide kraapimise ning tagastab kraapitud andmed. Käib läbi veebilehtede kategooriad ja kogub informatsiooni toodete kohta.
+- **api/**: Sisaldab API-d, mis vastutab veebisaitide kraapimise ja andmete töötlemise eest.
+    - **login.php**: Vastutab kasutaja autentimise ja tokenite genereerimise eest. Kasutajad saadavad oma emaili ja parooli ning saavad vastuseks unikaalse tokeni.
+    - **crawler.php**: Käivitab veebisaitide kraapimise ning tagastab kraabitud andmed. Käib läbi veebilehtede kategooriad ja kogub informatsiooni toodete kohta.
     - **index.php**: Peamine API-fail, mis haldab päringud ja vastused. Kasutatakse andmete pärimiseks ja töötlemiseks.
 
 - **config/**: Konfiguratsioonifailid, mis sisaldavad süsteemi jaoks olulisi andmeid.
@@ -100,7 +100,7 @@ root/
 
 - **js/**: JavaScript-failid, mis haldavad kasutajate autentimist ja andmete kuvamist.
     - **index.js**: Kasutatakse login-protsessi haldamiseks, sh kasutajate autentimine ja tokenite kontroll.
-    - **main.js**: Vastutab kraapitud andmete kuvamise eest erinevates graafikutes (scatter, bar, line, pie chart), kasutades Chart.js-i.
+    - **main.js**: Vastutab kraabitud andmete kuvamise eest erinevates graafikutes (scatter, bar, line, pie chart), kasutades Chart.js-i.
 
 ### Funktsioonid ja API lõpp-punktid:
 
@@ -117,7 +117,7 @@ root/
     ```
 
 - **GET /api/index.php**: 
-  - Kirjeldus: Tagastab kraapitud andmed. Kasutaja peab saatma kehtiva tokeni, et päring oleks lubatud.
+  - Kirjeldus: Tagastab kraabitud andmed. Kasutaja peab saatma kehtiva tokeni, et päring oleks lubatud.
   - Päised:
     - `Authorization: Bearer your-token-here`
   - Tagastab:
@@ -154,13 +154,13 @@ root/
 
 ### Frontendi funktsioonid:
 - **Login**: Kasutajate autentimine, kontrollitakse mandaate ja kui need on õiged, salvestatakse token brauseri `localStorage`-i.
-- **Dashboard**: Kuvab erinevaid graafikuid kraapitud andmete põhjal (nt scatter, bar, line ja pie chart), kasutades saadud andmeid backend API-st.
+- **Dashboard**: Kuvab erinevaid graafikuid kraabitud andmete põhjal (nt scatter, bar, line ja pie chart), kasutades saadud andmeid backend API-st.
 
 ### Graafikutüübid:
-- **Scatter Chart**: Kuvab toodete arvu kategooriate kaupa.
-- **Bar Chart**: Järjestab kategooriad keskmise reitingu alusel.
-- **Line Chart**: Näitab keskmise hinna trende erinevates kategooriates.
 - **Pie Chart**: Visualiseerib viit suurimat kategooriat toodete arvu järgi ja lisab "Other" kategooria ülejäänud toodete jaoks.
+- **Scatter Chart**: Kuvab toodete arvu kategooriate kaupa.
+- **Line Chart**: Näitab keskmise hinna trende erinevates kategooriates.
+- **Bar Chart**: Järjestab kategooriad keskmise reitingu alusel.
 
 ### Tulevikuplaanid:
 - Parandada kraapimisprotsessi efektiivsust
