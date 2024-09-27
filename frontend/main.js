@@ -89,6 +89,8 @@ function parseData(webData) {
     console.log(byRating)
     renderScatter(byRating)
     renderBarChart(byRating)
+    renderLineChart(byRating)
+    renderBooksPieChart()
 }
 
 function getRatingsList(data) {
@@ -103,31 +105,36 @@ function getRatingsList(data) {
 
     Object.keys(data.categories).forEach(category => {
         let totalRating = 0;
+        let totalPrice = 0;
         let itemCount = 0;
 
         Object.keys(data.categories[category]).forEach(itemKey => {
             let item = data.categories[category][itemKey];
             
-            // Check if item exists and has a rating
             if (item && typeof item.rating !== 'undefined' && item.rating > 0) {
                 totalRating += item.rating;
                 itemCount++;
             }
+
+            if (item && typeof item.price !== 'undefined' && item.price > 0) {
+                totalPrice += parseFloat(item.price);
+            }
         });
 
-        // Calculate the average rating and round up to one decimal
-        let averageRating = itemCount > 0 ? Math.ceil((totalRating / itemCount) * 10) / 10 : 0;
+        let averageRating = itemCount > 0 ? Math.round((totalRating / itemCount) * 100) / 100 : 0;
+        let averagePrice = itemCount > 0 ? Math.round((totalPrice / itemCount) * 100) / 100 : 0;
 
-        // Add category, average rating, and product count to the list
         ratingsList.push({ 
             category: category, 
             averageRating: averageRating, 
-            productCount: itemCount 
+            productCount: itemCount, 
+            averagePrice: averagePrice 
         });
     });
 
     return ratingsList;
 }
+
 function renderBarChart(categoriesData) {
     const ctx = document.getElementById('barChart').getContext('2d');
 
@@ -141,7 +148,7 @@ function renderBarChart(categoriesData) {
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: categoryLabels,  // Category names as x-axis labels
+            labels: categoryLabels,
             datasets: [{
                 label: 'Average Rating',
                 data: averageRatings,
@@ -179,7 +186,6 @@ function renderBarChart(categoriesData) {
         }
     });
 }
-
 
 function renderScatter(categoriesData) {
     const ctx = document.getElementById('scatterChart').getContext('2d');
@@ -220,6 +226,89 @@ function renderScatter(categoriesData) {
         }
     });
 }
+function renderLineChart(categoriesData) {
+    const ctx = document.getElementById('lineChart').getContext('2d');
+
+    const categoryLabels = categoriesData.map(item => item.category);
+    const averagePrices = categoriesData.map(item => item.averagePrice);
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: 'Average Price per Category',
+                data: averagePrices,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,  
+                pointRadius: 5
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Category'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Average Price'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Average Price per Category'
+                }
+            },
+            responsive: true
+        }
+    });
+}
+
+function renderBooksPieChart() {
+    const ctx = document.getElementById('booksPieChart').getContext('2d');
+
+    const data = {
+        labels: ['Books'],
+        datasets: [{
+            data: [100],
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: '100% of Products are Books'
+                }
+            },
+            responsive: true
+        }
+    });
+}
+
 
 document.addEventListener('DOMContentLoaded', function() {
     addSearchAndLogoutButton();
